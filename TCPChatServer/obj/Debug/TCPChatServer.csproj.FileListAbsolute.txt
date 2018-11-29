@@ -1,0 +1,15 @@
+F:\VisualStudioRepos\TCPChatServer\TCPChatServer\bin\Debug\TCPChatServer.exe.config
+F:\VisualStudioRepos\TCPChatServer\TCPChatServer\bin\Debug\TCPChatServer.exe
+F:\VisualStudioRepos\TCPChatServer\TCPChatServer\bin\Debug\TCPChatServer.pdb
+F:\VisualStudioRepos\TCPChatServer\TCPChatServer\obj\Debug\TCPChatServer.csprojAssemblyReference.cache
+F:\VisualStudioRepos\TCPChatServer\TCPChatServer\obj\Debug\MainWindow.g.cs
+F:\VisualStudioRepos\TCPChatServer\TCPChatServer\obj\Debug\App.g.cs
+F:\VisualStudioRepos\TCPChatServer\TCPChatServer\obj\Debug\TCPChatServer_MarkupCompile.cache
+F:\VisualStudioRepos\TCPChatServer\TCPChatServer\obj\Debug\TCPChatServer_MarkupCompile.lref
+F:\VisualStudioRepos\TCPChatServer\TCPChatServer\obj\Debug\MainWindow.baml
+F:\VisualStudioRepos\TCPChatServer\TCPChatServer\obj\Debug\TCPChatServer.g.resources
+F:\VisualStudioRepos\TCPChatServer\TCPChatServer\obj\Debug\TCPChatServer.Properties.Resources.resources
+F:\VisualStudioRepos\TCPChatServer\TCPChatServer\obj\Debug\TCPChatServer.csproj.GenerateResource.cache
+F:\VisualStudioRepos\TCPChatServer\TCPChatServer\obj\Debug\TCPChatServer.csproj.CoreCompileInputs.cache
+F:\VisualStudioRepos\TCPChatServer\TCPChatServer\obj\Debug\TCPChatServer.exe
+F:\VisualStudioRepos\TCPChatServer\TCPChatServer\obj\Debug\TCPChatServer.pdb
