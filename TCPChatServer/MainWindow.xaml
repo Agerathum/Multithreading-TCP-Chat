@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TCPChatServer"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="TCP Chat Server" Height="384" Width="768" Loaded="Window_Load" Closing="Window_Closing" WindowStartupLocation="CenterScreen" Closed="Window_Closed" MinWidth="768" MinHeight="384" Background="{x:Null}" Margin="0">
     <Grid>
         
     </Grid>
