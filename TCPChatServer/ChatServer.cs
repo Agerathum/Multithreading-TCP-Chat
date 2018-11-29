@@ -14,13 +14,15 @@ namespace TCPChatServer
 {
     public class ChatServer
     {
-        const int PORT_NUM = 10000;
+        private const int PORT_NUM = 10000;
+        private const string msgDateFormat = "(HH:mm:ss)";
         private Hashtable clients = new Hashtable();
         private TcpListener listenerTCP = null;
         private Thread listenerThread = null;
         private bool listening_stop = false;
-        public MainWindow mainWindow = null;
+        private MainWindow mainWindow = null;
 
+        
         public ChatServer(MainWindow mw)
         {
             mainWindow = mw;
@@ -64,8 +66,6 @@ namespace TCPChatServer
                 UpdateStatus("TCP Listener stoped.", mainWindow.LstStatus);
             }
             await Task.Delay(1000);
-            mainWindow.DoClose = true;
-            Environment.Exit(0);
         }
 
         // This subroutine sends a message to all attached clients
@@ -80,9 +80,6 @@ namespace TCPChatServer
                 client.SendData(strMessage);
             }
         }
-
-
-
         // This subroutine checks to see if username already exists in the clients Hashtable.
         // If it does, send a REFUSE message, otherwise confirm with a JOIN.
         private void ConnectUser(string userName, ClientConnection sender)
@@ -238,7 +235,10 @@ namespace TCPChatServer
         // This routine adds a string to the list of states.
         public void UpdateStatus(string statusMessage, ListBox listBox)
         {
-            mainWindow.Dispatcher.Invoke(() => mainWindow.LstStatus.Items.Add(DateTime.Now.ToString("(HH:mm:ss) ") + statusMessage));
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.Append(DateTime.Now.ToString(msgDateFormat)).Append(" ").Append(statusMessage);
+
+            mainWindow.Dispatcher.Invoke(() => mainWindow.LstStatus.Items.Add(stringBuilder));
             mainWindow.Dispatcher.Invoke(() => mainWindow.UpdateScrollBar(listBox));
         }
     }

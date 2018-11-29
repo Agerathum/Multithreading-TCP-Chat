@@ -37,7 +37,7 @@ namespace TCPChatServer
         private void LstStatus_SelectionChanged(object sender, SelectionChangedEventArgs e) { }
         private void LstPlayers_SelectionChanged(object sender, SelectionChangedEventArgs e) { }
         private void TxtBroadcast_TextChanged(object sender, TextChangedEventArgs e) { }
-        private void TextPM_TextChanged(object sender, TextChangedEventArgs e) { }
+        private void TxtPM_TextChanged(object sender, TextChangedEventArgs e) { }
         private void BtnPM_Click(object sender, RoutedEventArgs e) { }
         private void BtnKick_Click(object sender, RoutedEventArgs e) { }
         // This subroutine sends the contents of the Broadcast textbox to all clients, if
@@ -116,6 +116,8 @@ namespace TCPChatServer
                 MainGrid.IsEnabled = false;
                 e.Cancel = true;
                 await chatServer.ClosingTask();
+                DoClose = true;
+                Environment.Exit(0);
             }
         }
 
