@@ -12,13 +12,28 @@ using System.Windows.Media;
 
 namespace TCPChatServer
 {
-    public static class MoreColors // or public static class
+    public static class Palette // or public static class
     {
-        public static Color BLACK_PEARL { get { return Color.FromRgb(30, 39, 46); } }
-        public static Color CONCRETE { get { return Color.FromRgb(149, 165, 166); } }
-        public static Color PIXELATED_GRASS { get { return Color.FromRgb(0, 148, 50); } }
-        public static Color HARLEY_DAVIDSON_ORANGE { get { return Color.FromRgb(194, 54, 22); } }
+        public static class Colors
+        {
+            public static Color BLACK_PEARL { get { return Color.FromRgb(30, 39, 46); } }
+            public static Color CONCRETE { get { return Color.FromRgb(149, 165, 166); } }
+            public static Color PIXELATED_GRASS { get { return Color.FromRgb(0, 148, 50); } }
+            public static Color HARLEY_DAVIDSON_ORANGE { get { return Color.FromRgb(194, 54, 22); } }
+            public static Color WHITE { get { return Color.FromRgb(255, 255, 255); } }
+            public static Color SWAN_WHITE { get { return Color.FromRgb(247, 241, 227); } }
+            public static Color PROTOSS_PYLON { get { return Color.FromRgb(0, 168, 255); } }
+            public static Color BELIZE_HOLE { get { return Color.FromRgb(41, 128, 185); } }
 
+        }
+        public static class Brushes
+        {
+            public static SolidColorBrush WHITE { get { return new SolidColorBrush(Colors.WHITE); } }
+            public static SolidColorBrush TRANS { get { return new SolidColorBrush(System.Windows.Media.Colors.Transparent); } }
+            public static SolidColorBrush SWAN_WHITE { get { return new SolidColorBrush(Colors.SWAN_WHITE); } }
+            public static SolidColorBrush PROTOSS_PYLON { get { return new SolidColorBrush(Colors.PROTOSS_PYLON); } }
+
+        }
     }
     public class ChatServer
     {
@@ -51,7 +66,7 @@ namespace TCPChatServer
 
             listenerThread.IsBackground = true;
             listenerThread.Start();
-            UpdateStatus("TCP Listener started.", mainWindow.LstStatus, MoreColors.PIXELATED_GRASS);
+            UpdateStatus("TCP Listener started.", mainWindow.LstStatus, Palette.Colors.PIXELATED_GRASS);
         }
         public async Task StopThread()
         {
@@ -61,7 +76,7 @@ namespace TCPChatServer
             listenerThread.Interrupt();
             listenerThread.Abort();
             listenerThread = null;
-            UpdateStatus("TCP Listener stoped.", mainWindow.LstStatus, MoreColors.HARLEY_DAVIDSON_ORANGE);
+            UpdateStatus("TCP Listener stoped.", mainWindow.LstStatus, Palette.Colors.HARLEY_DAVIDSON_ORANGE);
         }
         public async Task ClosingTask()
         {
@@ -72,7 +87,7 @@ namespace TCPChatServer
             {
                 listenerThread.Interrupt();
                 listenerThread.Abort();
-                UpdateStatus("TCP Listener stoped.", mainWindow.LstStatus, MoreColors.HARLEY_DAVIDSON_ORANGE);
+                UpdateStatus("TCP Listener stoped.", mainWindow.LstStatus, Palette.Colors.HARLEY_DAVIDSON_ORANGE);
             }
             await Task.Delay(1000);
         }
@@ -100,7 +115,7 @@ namespace TCPChatServer
             else
             {
                 sender.Name = userName;
-                UpdateStatus(userName + " has joined the chat.", mainWindow.LstStatus, MoreColors.BLACK_PEARL);
+                UpdateStatus(userName + " has joined the chat.", mainWindow.LstStatus, Palette.Colors.BLACK_PEARL);
                 clients.Add(userName, sender);
                 mainWindow.Dispatcher.Invoke(() => mainWindow.LstPlayers.Items.Add(sender.Name));
                 mainWindow.Dispatcher.Invoke(() => mainWindow.UpdateScrollBar(mainWindow.LstPlayers));
@@ -114,7 +129,7 @@ namespace TCPChatServer
         // the name from the clients Hashtable
         private void DisconnectUser(ClientConnection sender)
         {
-            UpdateStatus(sender.Name + " has left the chat.", mainWindow.LstStatus, MoreColors.BLACK_PEARL);
+            UpdateStatus(sender.Name + " has left the chat.", mainWindow.LstStatus, Palette.Colors.BLACK_PEARL);
             SendToClients("CHAT|" + sender.Name + " has left the chat.", sender);
             clients.Remove(sender.Name);
             mainWindow.Dispatcher.Invoke(() => mainWindow.LstPlayers.Items.Remove(sender.Name));
@@ -148,7 +163,7 @@ namespace TCPChatServer
                     client.LineReceived += new LineReceive(OnLineReceived);
 
                     //AddHandler client.LineReceived, AddressOf OnLineReceived;
-                    UpdateStatus("New connection found: waiting for log-in.", mainWindow.LstStatus, MoreColors.BLACK_PEARL);
+                    UpdateStatus("New connection found: waiting for log-in.", mainWindow.LstStatus, Palette.Colors.BLACK_PEARL);
                 }
             }
             catch (Exception ex)
@@ -162,7 +177,7 @@ namespace TCPChatServer
         {
             ClientConnection client = null;
             string strUserList = null;
-            UpdateStatus("Sending " + sender.Name + " a list of users online.", mainWindow.LstStatus, MoreColors.BLACK_PEARL);
+            UpdateStatus("Sending " + sender.Name + " a list of users online.", mainWindow.LstStatus, Palette.Colors.BLACK_PEARL);
             strUserList = "LISTUSERS";
             // All entries in the clients Hashtable are ClientConnection so it is possible
             // to assign it safely.
@@ -221,7 +236,7 @@ namespace TCPChatServer
         // We send a chat message to all clients except the sender.
         private void SendChat(string message, ClientConnection sender)
         {
-            UpdateStatus(sender.Name + ": " + message, mainWindow.LstStatus, MoreColors.BLACK_PEARL);
+            UpdateStatus(sender.Name + ": " + message, mainWindow.LstStatus, Palette.Colors.BLACK_PEARL);
             SendToClients("CHAT|" + sender.Name + ": " + message, sender);
         }
 
@@ -244,58 +259,7 @@ namespace TCPChatServer
         // This subroutine adds a string to the list of states.
         public void UpdateStatus(string statusMessage, ListBox listBox, Color color)
         {
-            //RichTextBox richTextBox = new RichTextBox();
-            //richTextBox.IsReadOnly = true;
-            //richTextBox.HorizontalAlignment = HorizontalAlignment.Stretch;
-            //richTextBox.Width = mainWindow.LstStatus.ActualWidth - 15;
-
-            //richTextBox.BorderBrush = new SolidColorBrush(Colors.Transparent);
-            //richTextBox.Background = new SolidColorBrush(Colors.White);
-            //richTextBox.SelectionBrush = new SolidColorBrush(Color.FromRgb(0, 151, 230));
-            //richTextBox.SelectionBrush.Opacity = 0.25;
-            //richTextBox.BorderThickness = new Thickness(1);
-
-            ////richTextBox.GotFocus += GotFocus;
-            ////richTextBox.LostFocus += LostFocus;
-            ////richTextBox.MouseEnter += MouseEnter;
-            ////richTextBox.MouseLeave += MouseLeave;
-
-            //richTextBox.AppendText(DateTime.Now.ToString(msgDateFormat), MoreColors.CONCRETE);
-            //richTextBox.AppendText(" ");
-            //richTextBox.AppendText(statusMessage, color);
-
-            //mainWindow.Dispatcher.Invoke(() => mainWindow.LstStatus.Items.Add(richTextBox));
-            //mainWindow.Dispatcher.Invoke(() => mainWindow.UpdateScrollBar(listBox));
-            //StringBuilder stringBuilder = new StringBuilder();
-            //stringBuilder.Append(DateTime.Now.ToString(msgDateFormat)).Append(" ").Append(statusMessage);
-
             mainWindow.Dispatcher.Invoke(() => mainWindow.CreateTxt(statusMessage, listBox, color));
-            mainWindow.Dispatcher.Invoke(() => mainWindow.UpdateScrollBar(listBox));
-
-
         }
-
-        //private void GotFocus(object sender, RoutedEventArgs e)
-        //{
-        //    RichTextBox richTextBox = sender as RichTextBox;
-        //    richTextBox.Background = new SolidColorBrush(Color.FromRgb(247, 241, 227));
-        //}
-        //private void LostFocus(object sender, RoutedEventArgs e)
-        //{
-        //    RichTextBox richTextBox = sender as RichTextBox;
-        //    richTextBox.Background = new SolidColorBrush(Colors.White);
-        //}
-
-        //private void MouseEnter(object sender, RoutedEventArgs e)
-        //{
-        //    RichTextBox richTextBox = sender as RichTextBox;
-        //    richTextBox.Background = new SolidColorBrush(Color.FromRgb(247, 241, 227));
-        //}
-        //private void MouseLeave(object sender, RoutedEventArgs e)
-        //{
-        //    RichTextBox richTextBox = sender as RichTextBox;
-        //    if (!richTextBox.IsFocused)
-        //        richTextBox.Background = new SolidColorBrush(Colors.White);
-        //}
     }
 }

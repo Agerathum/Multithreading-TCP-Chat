@@ -17,19 +17,18 @@ namespace TCPChatServer
     public class ClientConnection
     {
         private const int READ_BUFFER_SIZE = 255;
+        private byte[] readBuffer = new byte[READ_BUFFER_SIZE];
+        private TcpClient client;
+        private string strName;
 
         // Overload the new operator to set up a read thread.
         public ClientConnection(TcpClient client)
         {
             this.client = client;
-            // This starts the asynchronous read thread.  The data will be saved into
-            // readBuffer.
+
+            // This starts the asynchronous read thread.  The data will be saved into readBuffer.
             this.client.GetStream().BeginRead(readBuffer, 0, READ_BUFFER_SIZE, new AsyncCallback(StreamReceiver), null);
         }
-
-        private TcpClient client;
-        private byte[] readBuffer = new byte[READ_BUFFER_SIZE];
-        private string strName;
 
         // The Name property uniquely identifies the user connection.
         public string Name
