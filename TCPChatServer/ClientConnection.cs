@@ -5,7 +5,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net.Sockets;
-
+using System.Windows;
 
 namespace TCPChatServer
 {
@@ -16,7 +16,8 @@ namespace TCPChatServer
 
     public class ClientConnection
     {
-        const int READ_BUFFER_SIZE = 255;
+        private const int READ_BUFFER_SIZE = 255;
+
         // Overload the new operator to set up a read thread.
         public ClientConnection(TcpClient client)
         {
@@ -75,7 +76,7 @@ namespace TCPChatServer
                 }
                 // Convert the byte array the message was saved into, minus one for the
                 // Chr(13).
-                strMessage = Encoding.ASCII.GetString(readBuffer, 0, BytesRead - 1);
+                strMessage = Encoding.UTF8.GetString(readBuffer, 0, BytesRead - 1);
                 LineReceived(this, strMessage);
                 // Ensure that no other threads try to use the stream at the same time.
                 lock (client.GetStream())
@@ -84,8 +85,9 @@ namespace TCPChatServer
                     client.GetStream().BeginRead(readBuffer, 0, READ_BUFFER_SIZE, new AsyncCallback(StreamReceiver), null);
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
+                MessageBox.Show(ex.ToString());
             }
         }
     }

@@ -5,9 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TCPChatServer"
         mc:Ignorable="d"
-        Title="TCP Chat Server" Height="384" Width="768" Loaded="Window_Load" Closing="Window_Closing" WindowStartupLocation="CenterScreen" Closed="Window_Closed" MinWidth="768" MinHeight="384" Background="{x:Null}" Margin="0">
+        Title="TCP Chat Server" Height="384" Width="768" Loaded="Window_Load" Closing="Window_Closing" WindowStartupLocation="CenterScreen" Closed="Window_Closed" MinWidth="768" MinHeight="384" Background="{x:Null}" Margin="0" FontFamily="Verdana"
+        >
     <Grid>
-        <Grid x:Name="MainGrid" Background="#FFF0F0F0">
+        <Grid x:Name="MainGrid" Background="#FFECF0F1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
@@ -53,9 +54,22 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <ListBox Grid.ColumnSpan="2" x:Name="LstStatus" SelectionChanged="LstStatus_SelectionChanged" Margin="10,10,0,35" Grid.RowSpan="2"/>
-                <TextBox Grid.Row="1" Grid.ColumnSpan="2" x:Name="TxtBroadcast" TextWrapping="Wrap" TextChanged="TxtBroadcast_TextChanged" VerticalAlignment="Bottom" Height="20" Margin="10,0,139,10"/>
-                <Button Grid.Column="1" Grid.Row="1" x:Name="BtnBroadcast" Content="Broadcast" Click="BtnBroadcast_Click" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="134" Margin="0,0,0,10"/>
+                <ListBox ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.ColumnSpan="2" x:Name="LstStatus" Margin="10,10,0,39" Grid.RowSpan="2" Background="#FFDFE4EA" SizeChanged="LstStatus_SizeChanged">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="IsSelected" Value="{Binding Content.IsSelected, Mode=TwoWay, RelativeSource={RelativeSource Self}}"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <ContentPresenter/>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
+                    <TextBox Grid.Row="1" Grid.ColumnSpan="2" x:Name="TxtBroadcast" TextWrapping="Wrap" TextChanged="TxtBroadcast_TextChanged" VerticalAlignment="Bottom" Height="24" Margin="10,0,139,10" Background="#FFF5F6FA" TextAlignment="Justify"/>
+                <Button Grid.Column="1" Grid.Row="1" x:Name="BtnBroadcast" Content="Broadcast" Click="BtnBroadcast_Click" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="134" Margin="0,0,0,10" Background="#FFDCDDE1" Height="24"/>
             </Grid>
             <Grid x:Name="RightMainGrid" Grid.Column="2" Grid.Row="1">
                 <Grid.RowDefinitions>
@@ -68,13 +82,13 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <ListBox Grid.ColumnSpan="2" x:Name="LstPlayers" SelectionChanged="LstPlayers_SelectionChanged" Grid.RowSpan="2" Margin="10,10,10,0"/>
+                <ListView Grid.ColumnSpan="2" x:Name="LstPlayers" SelectionChanged="LstPlayers_SelectionChanged" Grid.RowSpan="2" Margin="10,10,10,5" Background="#FFDFE4EA"/>
                 <DockPanel Grid.Row="2" Grid.ColumnSpan="3" Width="283" HorizontalAlignment="Left">
                     <Border Height="20" VerticalAlignment="Top" Margin="10,5,0,0" DockPanel.Dock="Top" HorizontalAlignment="Left" Width="263">
-                        <TextBox x:Name ="TxtPM" TextWrapping="Wrap" TextChanged="TxtPM_TextChanged"/>
+                        <TextBox x:Name ="TxtPM" TextWrapping="Wrap" TextChanged="TxtPM_TextChanged" Background="#FFF5F6FA" Height="24" Margin="0,-4,0,0"/>
                     </Border>
-                    <Button x:Name ="BtnPM" Content="PM" HorizontalAlignment="Left" VerticalAlignment="Top" Width="86" Click="BtnPM_Click" Margin="10,5,10,10" Height="20"/>
-                    <Button x:Name ="BtnKick" Content="Kick" HorizontalAlignment="Right" VerticalAlignment="Top" Width="86" Click="BtnKick_Click" Height="20" DockPanel.Dock="Right" Margin="10,5,10,10"/>
+                    <Button x:Name ="BtnPM" Content="PM" HorizontalAlignment="Left" VerticalAlignment="Top" Width="86" Click="BtnPM_Click" Margin="10,5,10,10" Height="24" Background="#FFDCDDE1"/>
+                    <Button x:Name ="BtnKick" Content="Kick" HorizontalAlignment="Right" VerticalAlignment="Top" Width="86" Click="BtnKick_Click" Height="24" DockPanel.Dock="Right" Margin="10,5,10,10" Background="#FFDCDDE1"/>
                 </DockPanel>
             </Grid>
         </Grid>

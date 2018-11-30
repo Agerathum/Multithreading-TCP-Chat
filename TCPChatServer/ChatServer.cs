@@ -2,8 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Sockets;
 using System.Text;
+using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -12,6 +12,14 @@ using System.Windows.Media;
 
 namespace TCPChatServer
 {
+    public static class MoreColors // or public static class
+    {
+        public static Color BLACK_PEARL { get { return Color.FromRgb(30, 39, 46); } }
+        public static Color CONCRETE { get { return Color.FromRgb(149, 165, 166); } }
+        public static Color PIXELATED_GRASS { get { return Color.FromRgb(0, 148, 50); } }
+        public static Color HARLEY_DAVIDSON_ORANGE { get { return Color.FromRgb(194, 54, 22); } }
+
+    }
     public class ChatServer
     {
         private const int PORT_NUM = 10000;
@@ -22,7 +30,7 @@ namespace TCPChatServer
         private bool listening_stop = false;
         private MainWindow mainWindow = null;
 
-        
+
         public ChatServer(MainWindow mw)
         {
             mainWindow = mw;
@@ -39,9 +47,11 @@ namespace TCPChatServer
             listening_stop = false;
             ThreadStart doListen = new ThreadStart(DoListen);
             listenerThread = new Thread(doListen);
+            //listenerThread.SetApartmentState(ApartmentState.STA);
+
             listenerThread.IsBackground = true;
             listenerThread.Start();
-            UpdateStatus("TCP Listener started.", mainWindow.LstStatus);
+            UpdateStatus("TCP Listener started.", mainWindow.LstStatus, MoreColors.PIXELATED_GRASS);
         }
         public async Task StopThread()
         {
@@ -51,9 +61,8 @@ namespace TCPChatServer
             listenerThread.Interrupt();
             listenerThread.Abort();
             listenerThread = null;
-            UpdateStatus("TCP Listener stoped.", mainWindow.LstStatus);
+            UpdateStatus("TCP Listener stoped.", mainWindow.LstStatus, MoreColors.HARLEY_DAVIDSON_ORANGE);
         }
-
         public async Task ClosingTask()
         {
             listening_stop = true;
@@ -63,7 +72,7 @@ namespace TCPChatServer
             {
                 listenerThread.Interrupt();
                 listenerThread.Abort();
-                UpdateStatus("TCP Listener stoped.", mainWindow.LstStatus);
+                UpdateStatus("TCP Listener stoped.", mainWindow.LstStatus, MoreColors.HARLEY_DAVIDSON_ORANGE);
             }
             await Task.Delay(1000);
         }
@@ -91,7 +100,7 @@ namespace TCPChatServer
             else
             {
                 sender.Name = userName;
-                UpdateStatus(userName + " has joined the chat.", mainWindow.LstStatus);
+                UpdateStatus(userName + " has joined the chat.", mainWindow.LstStatus, MoreColors.BLACK_PEARL);
                 clients.Add(userName, sender);
                 mainWindow.Dispatcher.Invoke(() => mainWindow.LstPlayers.Items.Add(sender.Name));
                 mainWindow.Dispatcher.Invoke(() => mainWindow.UpdateScrollBar(mainWindow.LstPlayers));
@@ -105,7 +114,7 @@ namespace TCPChatServer
         // the name from the clients Hashtable
         private void DisconnectUser(ClientConnection sender)
         {
-            UpdateStatus(sender.Name + " has left the chat.", mainWindow.LstStatus);
+            UpdateStatus(sender.Name + " has left the chat.", mainWindow.LstStatus, MoreColors.BLACK_PEARL);
             SendToClients("CHAT|" + sender.Name + " has left the chat.", sender);
             clients.Remove(sender.Name);
             mainWindow.Dispatcher.Invoke(() => mainWindow.LstPlayers.Items.Remove(sender.Name));
@@ -126,8 +135,8 @@ namespace TCPChatServer
                 {
                     if (!listenerTCP.Pending())
                     {
-                        Thread.Sleep(100);  // choose a number (in milliseconds) that makes sense
-                        continue;           // skip to next iteration of loop
+                        Thread.Sleep(100);  // that makes sense skip to next iteration of loop
+                        continue;           
                     }
 
                     // Create a new user connection using TcpClient returned by
@@ -139,7 +148,7 @@ namespace TCPChatServer
                     client.LineReceived += new LineReceive(OnLineReceived);
 
                     //AddHandler client.LineReceived, AddressOf OnLineReceived;
-                    UpdateStatus("New connection found: waiting for log-in.", mainWindow.LstStatus);
+                    UpdateStatus("New connection found: waiting for log-in.", mainWindow.LstStatus, MoreColors.BLACK_PEARL);
                 }
             }
             catch (Exception ex)
@@ -153,7 +162,7 @@ namespace TCPChatServer
         {
             ClientConnection client = null;
             string strUserList = null;
-            UpdateStatus("Sending " + sender.Name + " a list of users online.", mainWindow.LstStatus);
+            UpdateStatus("Sending " + sender.Name + " a list of users online.", mainWindow.LstStatus, MoreColors.BLACK_PEARL);
             strUserList = "LISTUSERS";
             // All entries in the clients Hashtable are ClientConnection so it is possible
             // to assign it safely.
@@ -212,19 +221,19 @@ namespace TCPChatServer
         // We send a chat message to all clients except the sender.
         private void SendChat(string message, ClientConnection sender)
         {
-            UpdateStatus(sender.Name + ": " + message, mainWindow.LstStatus);
+            UpdateStatus(sender.Name + ": " + message, mainWindow.LstStatus, MoreColors.BLACK_PEARL);
             SendToClients("CHAT|" + sender.Name + ": " + message, sender);
         }
 
-        // This routine sends the message to all attached clients except the sender.
+        // This subroutine sends a message to all attached clients except the sender.
         private void SendToClients(string strMessage, ClientConnection sender)
         {
             ClientConnection client;
-            // Все записи в клиентских Hashtable являются ClientConnection, поэтому можно безопасно назначить их.
+            // All entries in the clients Hashtable are UserConnection so it is possible to assign it safely.
             foreach (DictionaryEntry entry in clients)
             {
                 client = (ClientConnection)entry.Value;
-                // Исключить отправителя.
+                // Exclude the sender.
                 if (client.Name != sender.Name)
                 {
                     client.SendData(strMessage);
@@ -232,14 +241,61 @@ namespace TCPChatServer
             }
         }
 
-        // This routine adds a string to the list of states.
-        public void UpdateStatus(string statusMessage, ListBox listBox)
+        // This subroutine adds a string to the list of states.
+        public void UpdateStatus(string statusMessage, ListBox listBox, Color color)
         {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.Append(DateTime.Now.ToString(msgDateFormat)).Append(" ").Append(statusMessage);
+            //RichTextBox richTextBox = new RichTextBox();
+            //richTextBox.IsReadOnly = true;
+            //richTextBox.HorizontalAlignment = HorizontalAlignment.Stretch;
+            //richTextBox.Width = mainWindow.LstStatus.ActualWidth - 15;
 
-            mainWindow.Dispatcher.Invoke(() => mainWindow.LstStatus.Items.Add(stringBuilder));
+            //richTextBox.BorderBrush = new SolidColorBrush(Colors.Transparent);
+            //richTextBox.Background = new SolidColorBrush(Colors.White);
+            //richTextBox.SelectionBrush = new SolidColorBrush(Color.FromRgb(0, 151, 230));
+            //richTextBox.SelectionBrush.Opacity = 0.25;
+            //richTextBox.BorderThickness = new Thickness(1);
+
+            ////richTextBox.GotFocus += GotFocus;
+            ////richTextBox.LostFocus += LostFocus;
+            ////richTextBox.MouseEnter += MouseEnter;
+            ////richTextBox.MouseLeave += MouseLeave;
+
+            //richTextBox.AppendText(DateTime.Now.ToString(msgDateFormat), MoreColors.CONCRETE);
+            //richTextBox.AppendText(" ");
+            //richTextBox.AppendText(statusMessage, color);
+
+            //mainWindow.Dispatcher.Invoke(() => mainWindow.LstStatus.Items.Add(richTextBox));
+            //mainWindow.Dispatcher.Invoke(() => mainWindow.UpdateScrollBar(listBox));
+            //StringBuilder stringBuilder = new StringBuilder();
+            //stringBuilder.Append(DateTime.Now.ToString(msgDateFormat)).Append(" ").Append(statusMessage);
+
+            mainWindow.Dispatcher.Invoke(() => mainWindow.CreateTxt(statusMessage, listBox, color));
             mainWindow.Dispatcher.Invoke(() => mainWindow.UpdateScrollBar(listBox));
+
+
         }
+
+        //private void GotFocus(object sender, RoutedEventArgs e)
+        //{
+        //    RichTextBox richTextBox = sender as RichTextBox;
+        //    richTextBox.Background = new SolidColorBrush(Color.FromRgb(247, 241, 227));
+        //}
+        //private void LostFocus(object sender, RoutedEventArgs e)
+        //{
+        //    RichTextBox richTextBox = sender as RichTextBox;
+        //    richTextBox.Background = new SolidColorBrush(Colors.White);
+        //}
+
+        //private void MouseEnter(object sender, RoutedEventArgs e)
+        //{
+        //    RichTextBox richTextBox = sender as RichTextBox;
+        //    richTextBox.Background = new SolidColorBrush(Color.FromRgb(247, 241, 227));
+        //}
+        //private void MouseLeave(object sender, RoutedEventArgs e)
+        //{
+        //    RichTextBox richTextBox = sender as RichTextBox;
+        //    if (!richTextBox.IsFocused)
+        //        richTextBox.Background = new SolidColorBrush(Colors.White);
+        //}
     }
 }

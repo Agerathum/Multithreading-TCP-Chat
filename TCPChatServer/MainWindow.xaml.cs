@@ -1,20 +1,7 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Net.Sockets;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace TCPChatServer
 {
@@ -28,6 +15,8 @@ namespace TCPChatServer
 
         private ChatServer chatServer = null;
         public ChatServer ChatServer { get { return chatServer; } set { chatServer = value; } }
+
+        private const string msgDateFormat = "(HH:mm:ss)";
 
         public MainWindow()
         {
@@ -46,7 +35,7 @@ namespace TCPChatServer
         {
             if (TxtBroadcast.Text != "")
             {
-                chatServer.UpdateStatus("Broadcasting: " + TxtBroadcast.Text, LstStatus);
+                chatServer.UpdateStatus("Broadcasting: " + TxtBroadcast.Text, LstStatus, MoreColors.BLACK_PEARL);
                 chatServer.Broadcast("BROAD|" + TxtBroadcast.Text);
                 TxtBroadcast.Text = string.Empty;
             }
@@ -85,15 +74,57 @@ namespace TCPChatServer
         }
         #endregion
 
+
+        private void LstStatus_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            // Get the border of the listview (first child of a listview)
+            Decorator border = VisualTreeHelper.GetChild(LstStatus, 0) as Decorator;
+            double d = 0;
+            // Get scrollviewer
+            ScrollViewer scrollViewer = border.Child as ScrollViewer;
+            if (scrollViewer.ScrollableHeight == 0)
+            {
+                d = 4;
+            }
+            else
+            {
+                d = 23;
+            }
+            foreach (RichTextBox rbt in LstStatus.Items)
+            {
+                rbt.Width = LstStatus.ActualWidth - d;
+            }
+        }
+
         // Moves the scrollbar to the last added element in ListBox.
         public void UpdateScrollBar(ListBox listBox)
         {
+            {
+                Decorator view = VisualTreeHelper.GetChild(LstStatus, 0) as Decorator;
+                double d = 0;
+                // Get scrollviewer
+                ScrollViewer scrollViewer = view.Child as ScrollViewer;
+                if (scrollViewer.ScrollableHeight == 0)
+                {
+                    d = 4;
+                }
+                else
+                {
+                    d = 23;
+                }
+                foreach (RichTextBox rbt in LstStatus.Items)
+                {
+                    rbt.Width = LstStatus.ActualWidth - d;
+                }
+            }
+
             if (listBox != null)
             {
                 Border border = (Border)VisualTreeHelper.GetChild(listBox, 0);
                 ScrollViewer scrollViewer = (ScrollViewer)VisualTreeHelper.GetChild(border, 0);
                 scrollViewer.ScrollToBottom();
             }
+
         }
 
 
@@ -127,7 +158,56 @@ namespace TCPChatServer
             Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
             Application.Current.Shutdown();
         }
+
         #endregion
+
+        SolidColorBrush white = new SolidColorBrush(Colors.White);
+        SolidColorBrush transparent = new SolidColorBrush(Colors.Transparent);
+
+        public void CreateTxt(string statusMessage, ListBox listBox, Color color)
+        {
+            RichTextBox richTextBox = new RichTextBox();
+            richTextBox.IsReadOnly = true;
+            richTextBox.HorizontalAlignment = HorizontalAlignment.Stretch;
+
+            richTextBox.BorderBrush = transparent;
+            richTextBox.Background = white;
+            richTextBox.SelectionBrush = new SolidColorBrush(Color.FromRgb(0, 151, 230)) { Opacity = 0.5 };
+
+            richTextBox.GotFocus += gotFocus;
+            richTextBox.LostFocus += lostFocus;
+            richTextBox.MouseEnter += mouseEnter;
+            richTextBox.MouseLeave += mouseLeave;
+
+            richTextBox.AppendText(DateTime.Now.ToString(msgDateFormat), MoreColors.CONCRETE);
+            richTextBox.AppendText(" ");
+            richTextBox.AppendText(statusMessage, color);
+            richTextBox.HorizontalAlignment = HorizontalAlignment.Left;
+
+            LstStatus.Items.Add(richTextBox);
+            UpdateScrollBar(listBox);
+        }
+        private void gotFocus(object sender, RoutedEventArgs e)
+        {
+            RichTextBox richTextBox = sender as RichTextBox;
+            richTextBox.Background = new SolidColorBrush(Color.FromRgb(247, 241, 227));
+        }
+        private void lostFocus(object sender, RoutedEventArgs e)
+        {
+            RichTextBox richTextBox = sender as RichTextBox;
+            richTextBox.Background = white;
+        }
+        private void mouseEnter(object sender, RoutedEventArgs e)
+        {
+            RichTextBox richTextBox = sender as RichTextBox;
+            richTextBox.Background = new SolidColorBrush(Color.FromRgb(247, 241, 227));
+        }
+        private void mouseLeave(object sender, RoutedEventArgs e)
+        {
+            RichTextBox richTextBox = sender as RichTextBox;
+            if (!richTextBox.IsFocused)
+                richTextBox.Background = white;
+        }
 
     }
 }
