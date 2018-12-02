@@ -26,7 +26,7 @@ namespace Chat.Server
         private TcpListener listenerTCP = null;
         private Thread listenerThread = null;
         private MainWindow mainWindow = null;                         
-        public bool Started = false;                                  //Bool value - so we know if the server is started
+        public bool serverStarted = false;                                        //Bool value - so we know if the server is started.
 
         public ChatServer(MainWindow mw)
         {
@@ -40,7 +40,7 @@ namespace Chat.Server
                 listenerThread = null;
             }
 
-            Started = true;
+            serverStarted = true;
             ThreadStart doListen = new ThreadStart(ListenThread);
             listenerThread = new Thread(doListen);
             //listenerThread.SetApartmentState(ApartmentState.STA);
@@ -53,7 +53,7 @@ namespace Chat.Server
 
         public async Task StopServerTask()
         {
-            Started = false;
+            serverStarted = false;
             await Task.Delay(200);
             listenerTCP.Stop();
             listenerThread.Interrupt();
@@ -63,7 +63,7 @@ namespace Chat.Server
         }
         public async Task ClosingTask()
         {
-            Started = false;
+            serverStarted = false;
             await Task.Delay(100);
             listenerTCP.Stop();
             if (listenerThread != null)
@@ -130,7 +130,7 @@ namespace Chat.Server
                 listenerTCP = new TcpListener(IPAddress.Any, PORT_NUM);
                 listenerTCP.Start();
 
-                while (Started)
+                while (serverStarted)
                 {
 
                     if (!listenerTCP.Pending())
@@ -241,7 +241,7 @@ namespace Chat.Server
         // This subroutine adds a string to the list of states.
         public void UpdateStatus(string statusMessage, Color color)
         {
-            mainWindow.Dispatcher.Invoke(() => mainWindow.CreateTxt(statusMessage, color));
+            mainWindow.Dispatcher.Invoke(() => mainWindow.AddMessage(statusMessage, color));
         }
     }
 }

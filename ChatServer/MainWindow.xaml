@@ -19,7 +19,6 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-
             <Menu Grid.ColumnSpan="3" Background="White">
                 <MenuItem 
                     x:Name="Actions" 
@@ -55,7 +54,7 @@
                 </Grid.ColumnDefinitions>
                 <TextBox Grid.Row="1" Grid.ColumnSpan="2" x:Name="TxtBroadcast" TextChanged="TxtBroadcast_TextChanged" VerticalAlignment="Bottom" Height="32" Margin="10,0,149,10" VerticalContentAlignment="Top" TextWrapping="Wrap"  KeyDown="TxtBroadcast_Pressed" />
                 <Button Grid.Column="1" Grid.Row="1" x:Name="BtnBroadcast" Content="Broadcast" Click="BtnBroadcast_Click" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="134" Margin="0,0,10,10" Background="#FFDCDDE1" Height="32"/>
-                <RichTextBox x:Name="MessageTextBox" Grid.ColumnSpan="2" Margin="10,10,10,47" Grid.Row="1" Background="#FFF5F6FA" TextChanged="RichTextBox_TextChanged" VerticalScrollBarVisibility="Auto"/>
+                <RichTextBox x:Name="MessageTextBox" Grid.ColumnSpan="2" Margin="10,10,10,47" Grid.Row="1" Background="#FFF5F6FA" VerticalScrollBarVisibility="Auto"/>
             </Grid>
             <Grid x:Name="RightMainGrid" Grid.Column="2" Grid.Row="1">
                 <Grid.RowDefinitions>
