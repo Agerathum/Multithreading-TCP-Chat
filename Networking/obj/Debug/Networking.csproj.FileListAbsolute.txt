@@ -1,0 +1,6 @@
+F:\VisualStudioRepos\TCPChatServer\Networking\bin\Debug\Networking.dll
+F:\VisualStudioRepos\TCPChatServer\Networking\bin\Debug\Networking.pdb
+F:\VisualStudioRepos\TCPChatServer\Networking\obj\Debug\Networking.csprojAssemblyReference.cache
+F:\VisualStudioRepos\TCPChatServer\Networking\obj\Debug\Networking.csproj.CoreCompileInputs.cache
+F:\VisualStudioRepos\TCPChatServer\Networking\obj\Debug\Networking.dll
+F:\VisualStudioRepos\TCPChatServer\Networking\obj\Debug\Networking.pdb
